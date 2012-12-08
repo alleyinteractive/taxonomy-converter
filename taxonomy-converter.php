@@ -65,7 +65,7 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 
 		function menu() {
 			// Add new admin menu and save returned page hook
-			$hook_suffix = add_management_page(__('Taxonomy Converter'), __('Taxonomy Converter'), 'manage_options', 'taxonomy_converter', array( &$this, 'admin_page' ) );
+			$hook_suffix = add_management_page( __( 'Taxonomy Converter', 'taxonomy-converter' ), __( 'Taxonomy Converter', 'taxonomy-converter' ), 'manage_options', 'taxonomy_converter', array( &$this, 'admin_page' ) );
 		}
 
 		/**
@@ -180,7 +180,7 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 					$doc.bind('keypress', 'l', function(){$('a.tax-answer-new').click()});
 					term = <?php echo json_encode( $this->get_random_term() ) ?>;
 					if ( term.msg )
-						$('#taxcon_questions').html('All done!');
+						$('#taxcon_questions').html('<?php _e( 'All done!', 'taxonomy-converter' ); ?>');
 					else
 						$('#taxcon_questions').html(tctpl(term));
 					<?php endif; ?>
@@ -203,23 +203,24 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 			<?php endif; ?>
 
 			<div class="wrap">
-				<h2>Taxonomy Converter</h2>
+				<h2><?php _e( 'Taxonomy Converter', 'taxonomy-converter' ); ?></h2>
 
 				<?php if (isset($_GET['msg']) && $_GET['msg'] == 'saved'): ?>
-					<div class="updated fade"><p><?php _e('Options Saved'); ?></p></div>
+					<div class="updated fade"><p><?php _e( 'Settings Updated', 'taxonomy-converter' ); ?></p></div>
 				<?php endif ?>
 
 				<form method="post">
+					<h3><?php _e( 'Settings', 'taxonomy-converter' ); ?></h3>
 					<?php wp_nonce_field( 'taxonomy_converter_settings', 'taxcon_nonce' ); ?>
 
 					<p>
-						<label for="old_tax"><?php _e('Old Taxonomy'); ?></label><br />
+						<label for="old_tax"><?php _e( 'Old Taxonomy', 'taxonomy-converter' ); ?></label><br />
 						<select id="old_tax" name="taxcon[old_tax]">
 						<?php foreach ( $taxes as $tax ) : ?>
 							<option<?php if ( $this->options['old_tax'] == $tax ) echo ' selected="selected"' ?>><?php echo esc_html( $tax ); ?></option>
 						<?php endforeach; ?>
 						</select>
-						<input type="text" name="taxcon[old_tax_nickname]" value="<?php echo $this->get_option( 'old_tax_nickname' ) ?>" placeholder="Nickname" />
+						<input type="text" name="taxcon[old_tax_nickname]" value="<?php echo $this->get_option( 'old_tax_nickname' ) ?>" placeholder="<?php _e( 'Nickname', 'taxonomy-converter' ); ?>" />
 					</p>
 
 					<p>
@@ -229,7 +230,7 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 							<option<?php if ( $this->options['new_tax'] == $tax ) echo ' selected="selected"' ?>><?php echo esc_html( $tax ); ?></option>
 						<?php endforeach; ?>
 						</select>
-						<input type="text" name="taxcon[new_tax_nickname]" value="<?php echo $this->get_option( 'new_tax_nickname' ) ?>" placeholder="Nickname" />
+						<input type="text" name="taxcon[new_tax_nickname]" value="<?php echo $this->get_option( 'new_tax_nickname' ) ?>" placeholder="<?php _e( 'Nickname', 'taxonomy-converter' ); ?>" />
 					</p>
 
 					<?php submit_button() ?>
