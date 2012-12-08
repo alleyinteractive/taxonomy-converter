@@ -175,9 +175,8 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 						}, 'json');
 					});
 					<?php if ( isset( $this->options, $this->options['old_tax'], $this->options['new_tax'] ) ) : ?>
-					$doc = $(document);
-					$doc.bind('keypress', 'a', function(){$('a.tax-answer-old').click()});
-					$doc.bind('keypress', 'l', function(){$('a.tax-answer-new').click()});
+					$.hotkeys.add('a', function(){jQuery('#taxcon_questions a.tax-answer-old').click();return false;});
+					$.hotkeys.add('l', function(){jQuery('#taxcon_questions a.tax-answer-new').click();return false;});
 					term = <?php echo json_encode( $this->get_random_term() ) ?>;
 					if ( term.msg )
 						$('#taxcon_questions').html('<?php _e( 'All done!', 'taxonomy-converter' ); ?>');
