@@ -183,6 +183,7 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 						$('#taxcon_questions').html('<?php _e( 'All done!', 'taxonomy-converter' ); ?>');
 					else
 						$('#taxcon_questions').html(tctpl(term));
+					$('#taxcon_settings_form').hide().before('<p><a href="#" class="button-secondary" onclick="jQuery(\'#taxcon_settings_form\').slideDown();jQuery(this).remove();return false;">Display Settings</a></p>');
 					<?php endif; ?>
 				});
 			</script>
@@ -205,11 +206,13 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 			<div class="wrap">
 				<h2><?php _e( 'Taxonomy Converter', 'taxonomy-converter' ); ?></h2>
 
+				<div id="taxcon_questions"></div>
+
 				<?php if (isset($_GET['msg']) && $_GET['msg'] == 'saved'): ?>
 					<div class="updated fade"><p><?php _e( 'Settings Updated', 'taxonomy-converter' ); ?></p></div>
 				<?php endif ?>
 
-				<form method="post">
+				<form method="post" id="taxcon_settings_form">
 					<h3><?php _e( 'Settings', 'taxonomy-converter' ); ?></h3>
 					<?php wp_nonce_field( 'taxonomy_converter_settings', 'taxcon_nonce' ); ?>
 
@@ -235,8 +238,6 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 
 					<?php submit_button() ?>
 				</form>
-
-				<div id="taxcon_questions"></div>
 			</div>
 			<?php
 		}
