@@ -47,9 +47,9 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 				add_action( 'admin_init', array( &$this, 'save_settings' ) );
 				add_action( 'admin_init', array( &$this, 'load_js' ) );
 			}
-
-			register_activation_hook( __FILE__, array( &$this, 'activation_hook' ) );
-			register_deactivation_hook( __FILE__, array( &$this, 'deactivation_hook' ) );
+			$file = basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ );
+			register_activation_hook( $file, array( &$this, 'activation_hook' ) );
+			register_deactivation_hook( $file, array( &$this, 'deactivation_hook' ) );
 		}
 
 		/**
@@ -116,6 +116,10 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 				if ( in_array( $key, $this->valid_options ) )
 					$this->options[$key] = $val;
 			}
+			if ( !isset( $this->options['old_tax_nickname'] ) || empty( $this->options['old_tax_nickname'] ) )
+				$this->options['old_tax_nickname'] = $this->options['old_tax'];
+			if ( !isset( $this->options['new_tax_nickname'] ) || empty( $this->options['new_tax_nickname'] ) )
+				$this->options['new_tax_nickname'] = $this->options['new_tax'];
 			update_option( $this->option_key, $this->options );
 		}
 
@@ -175,8 +179,8 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 						}, 'json');
 					});
 					<?php if ( isset( $this->options, $this->options['old_tax'], $this->options['new_tax'] ) ) : ?>
-					$.hotkeys.add('a', function(){jQuery('#taxcon_questions a.tax-answer-old').click();return false;});
-					$.hotkeys.add('l', function(){jQuery('#taxcon_questions a.tax-answer-new').click();return false;});
+					$.hotkeys.add('a', {disableInInput:true}, function(){jQuery('#taxcon_questions a.tax-answer-old').click();return false;});
+					$.hotkeys.add('l', {disableInInput:true}, function(){jQuery('#taxcon_questions a.tax-answer-new').click();return false;});
 					term = <?php echo json_encode( $this->get_random_term() ) ?>;
 					if ( term.msg )
 						$('#taxcon_questions').html('<?php _e( 'All done!', 'taxonomy-converter' ); ?>');
@@ -193,10 +197,10 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 						<%= name %>
 					</div>
 					<div class="tax-choice left-choice">
-						<a href="#" class="tax-answer tax-answer-old" data-answer="old" data-term="<%= term_id %>"><?php echo isset( $this->options['old_tax_nickname'] ) ? $this->options['old_tax_nickname'] : $this->options['old_tax'] ?></a>
+						<a href="#" class="tax-answer tax-answer-old" data-answer="old" data-term="<%= term_id %>"><?php echo $this->options['old_tax_nickname'] ?></a>
 					</div>
 					<div class="tax-choice right-choice">
-						<a href="#" class="tax-answer tax-answer-new" data-answer="new" data-term="<%= term_id %>"><?php echo isset( $this->options['new_tax_nickname'] ) ? $this->options['new_tax_nickname'] : $this->options['new_tax'] ?></a>
+						<a href="#" class="tax-answer tax-answer-new" data-answer="new" data-term="<%= term_id %>"><?php echo $this->options['new_tax_nickname'] ?></a>
 					</div>
 				</div>
 			</script>
@@ -277,6 +281,7 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 				$updates = array( 'taxcon_viewed' => 1 );
 				if ( 'new' == $_POST['answer'] ) {
 					$updates['taxonomy'] = $this->get_option( 'new_tax' );
+					$updates['parent'] = 0; # If this was hierarchical, we have to shift it to root
 				}
 				$wpdb->update( $wpdb->term_taxonomy, $updates, array( 'term_id' => (int) $_POST['last_term'] ) );
 				do_action( 'tc_update_term', $_POST['last_term'], $this->get_option( 'new_tax' ), $this->get_option( 'old_tax' ) );
