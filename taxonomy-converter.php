@@ -279,6 +279,7 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 					$updates['taxonomy'] = $this->get_option( 'new_tax' );
 				}
 				$wpdb->update( $wpdb->term_taxonomy, $updates, array( 'term_id' => (int) $_POST['last_term'] ) );
+				do_action( 'tc_update_term', $_POST['last_term'], $this->get_option( 'new_tax' ), $this->get_option( 'old_tax' ) );
 			}
 			echo json_encode( $this->get_random_term() );
 			exit;
