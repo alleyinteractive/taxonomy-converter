@@ -284,7 +284,7 @@ if ( ! class_exists( 'Taxonomy_Converter' ) ) {
 					$updates['parent'] = 0; # If this was hierarchical, we have to shift it to root
 				}
 				$wpdb->update( $wpdb->term_taxonomy, $updates, array( 'term_id' => (int) $_POST['last_term'] ) );
-				do_action( 'tc_update_term', $_POST['last_term'], $this->get_option( 'new_tax' ), $this->get_option( 'old_tax' ) );
+				do_action( 'tc_update_term', $_POST['last_term'], $_POST['answer'], $this->get_option( 'new_tax' ), $this->get_option( 'old_tax' ) );
 			}
 			echo json_encode( $this->get_random_term() );
 			exit;
